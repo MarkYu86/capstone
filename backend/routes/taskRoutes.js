@@ -1,25 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const task = require("../models/task");
+const taskController = require("../controllers/taskController");
 
-router.post("/", async (req, res) => {
-  const { name, status, frequency, dueDate, assignedTo, notes } = req.body;
+//CREATE
+router.post("/", taskController.createTask);
 
-  try {
-    const newTask = await task.create({
-      name,
-      status,
-      frequency,
-      dueDate,
-      assignedTo,
-      notes,
-    });
+//READ all
+router.get("/", taskController.getAllTasks);
 
-    res.status(201).json({ message: "Task created", task: newTask });
-  } catch (err) {
-    console.error("Error creating task:", err);
-    res.status(500).json({ message: "Server error creating task" });
-  }
-});
+//READ one
+router.get("/:id", taskController.getTaskById);
+
+//UPDATE
+router.put("/:id", taskController.updateTask);
+
+//DELETE
+router.delete("/:id", taskController.deleteTask);
 
 module.exports = router;

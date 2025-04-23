@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
+const User = require("./user");
 
 const Task = sequelize.define("Task", {
   name: {
@@ -19,13 +20,26 @@ const Task = sequelize.define("Task", {
     allowNull: false,
   },
   assignedTo: {
-    type: DataTypes.STRING, // can link to userId later
+    type: DataTypes.STRING, // Will link to userId later if needed
     allowNull: false,
   },
   notes: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  groupId: {
+    type: DataTypes.INTEGER, // Will link to a Group model later
+    allowNull: true,
+  },
+}, {
+  timestamps: true, 
 });
+
+Task.belongsTo(User, { foreignKey: "UserId", onDelete: "CASCADE" });
+User.hasMany(Task, { foreignKey: "UserId" });
 
 module.exports = Task;
