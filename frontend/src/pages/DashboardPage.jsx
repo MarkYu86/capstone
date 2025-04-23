@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -32,7 +31,6 @@ function DashboardPage() {
 
   return (
     <>
-      <Navbar />
       <div className="container mt-5">
         <h1>Dashboard</h1>
         {user ? (
