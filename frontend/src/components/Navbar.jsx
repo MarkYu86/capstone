@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
-    };
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
 
-    checkAuth();
+    setIsLoggedIn(!!token);
 
-    window.addEventListener("storage", checkAuth);
-
-    return () => {
-      window.removeEventListener("storage", checkAuth);
-    };
-  }, []);
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUserName(parsedUser.name || parsedUser.email);
+    }
+  }, [location]); 
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
+    setUserName("");
     alert("Logged out!");
     navigate("/");
   };
@@ -31,23 +32,15 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg bg-body-tertiary bg-light">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">Cleaning App</Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+  
+        <div className="collapse navbar-collapse show" id="navbarNav">
+          <ul className="navbar-nav ms-auto align-items-center">
             {isLoggedIn ? (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                <li className="nav-item me-3">
+                  <span className="navbar-text">
+                    Welcome, <strong>{userName}</strong> 👋
+                  </span>
                 </li>
                 <li className="nav-item">
                   <button className="btn btn-outline-danger ms-2" onClick={handleLogout}>

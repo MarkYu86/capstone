@@ -16,11 +16,12 @@ function LoginPage() {
       });
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login successful!");
       navigate("/dashboard"); 
     } catch (err) {
-      alert("Login failed. Please check your credentials.");
+      alert("Login failed. Please check your details.");
       console.error(err);
     }
   };
