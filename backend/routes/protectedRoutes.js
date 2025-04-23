@@ -5,7 +5,9 @@ const verifyToken = require("../middleware/authMiddleware");
 router.get("/dashboard", verifyToken, (req, res) => {
   res.status(200).json({
     message: "Dashboard access granted",
-    user: req.user,
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email,
   });
 });
 

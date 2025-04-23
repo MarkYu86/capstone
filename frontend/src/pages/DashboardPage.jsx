@@ -10,7 +10,7 @@ function DashboardPage() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("You must be logged in to view the dashboard.");
+      alert("Please log in to view the dashboard.");
       navigate("/");
       return;
     }
@@ -21,7 +21,12 @@ function DashboardPage() {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => setUser(res.data.user))
+      .then((res) => {
+        setUser({
+          name: res.data.name,
+          email: res.data.email,
+        });
+      })
       .catch((err) => {
         console.error(err);
         localStorage.removeItem("token");
@@ -35,7 +40,7 @@ function DashboardPage() {
         <h1>Dashboard</h1>
         {user ? (
           <p>
-            Welcome back, <strong>{user.name || user.email}</strong>!
+            Welcome back, <strong>{user.name ? user.name : user.email}</strong>!
           </p>
         ) : (
           <p>Loading...</p>

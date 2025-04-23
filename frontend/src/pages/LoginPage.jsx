@@ -18,7 +18,7 @@ function LoginPage() {
       localStorage.setItem("token", res.data.token);
 
       alert("Login successful!");
-      navigate("/dashboard"); // Replace with your actual route after login
+      navigate("/dashboard"); 
     } catch (err) {
       alert("Login failed. Please check your credentials.");
       console.error(err);

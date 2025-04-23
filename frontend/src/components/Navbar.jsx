@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem("token");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
+    checkAuth();
+
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setIsLoggedIn(false);
     alert("Logged out!");
     navigate("/");
   };
@@ -14,9 +30,7 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary bg-light">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          Cleaning App
-        </Link>
+        <Link className="navbar-brand" to="/">Cleaning App</Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -33,9 +47,7 @@ function Navbar() {
             {isLoggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/dashboard">
-                    Dashboard
-                  </Link>
+                  <Link className="nav-link" to="/dashboard">Dashboard</Link>
                 </li>
                 <li className="nav-item">
                   <button className="btn btn-outline-danger ms-2" onClick={handleLogout}>
@@ -46,14 +58,10 @@ function Navbar() {
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    Login
-                  </Link>
+                  <Link className="nav-link" to="/">Login</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/register">
-                    Register
-                  </Link>
+                  <Link className="nav-link" to="/register">Register</Link>
                 </li>
               </>
             )}
