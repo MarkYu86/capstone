@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ function DashboardPage() {
 
   return (
     <>
+    <Sidebar/>
       <div className="container mt-5">
         <h1>Dashboard</h1>
         {user ? (

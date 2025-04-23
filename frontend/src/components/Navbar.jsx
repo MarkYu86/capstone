@@ -31,7 +31,7 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary bg-light">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">Cleaning App</Link>
+        <div className="navbar-brand">Flatties</div>
   
         <div className="collapse navbar-collapse show" id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-center">
