@@ -14,7 +14,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/protected", protectedRoutes);
 app.use("/api/tasks", taskRoutes);
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync().then(() => {
   console.log('Database synced');
   app.listen(3001, () => console.log('Server running on port 3001'));
 });
