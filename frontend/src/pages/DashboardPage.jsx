@@ -75,6 +75,13 @@ function DashboardPage() {
         >
           {showForm ? "Close Form" : "Add New Task"}
         </button>
+        <button
+  className="btn btn-outline-primary me-3"
+  onClick={() => navigate("/groups")}
+>
+  Create New Group
+</button>
+
 
         {showForm && (
           <CreateTaskForm

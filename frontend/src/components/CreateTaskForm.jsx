@@ -129,13 +129,7 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
           <button className="btn btn-success me-2" type="submit">
             Save Task
           </button>
-          <button
-            className="btn btn-secondary"
-            type="button"
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
+  
         </form>
       </div>
     </div>
