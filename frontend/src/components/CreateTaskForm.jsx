@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import GroupSelector from "./GroupSelector";
 
 function CreateTaskForm({ onTaskCreated, onCancel }) {
   const [formData, setFormData] = useState({
@@ -11,12 +12,13 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
   });
 
   const [groupUsers, setGroupUsers] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState("");
 
-  useEffect(() => {
+  const handleGroupChange = (groupId) => {
+    setSelectedGroup(groupId);
+    if (!groupId) return;
+
     const token = localStorage.getItem("token");
-
-    // Replace with actual group ID or get from props/context/JWT
-    const groupId = 1;
 
     axios
       .get(`http://localhost:3001/api/groups/${groupId}/users`, {
@@ -24,13 +26,9 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => {
-        setGroupUsers(res.data);
-      })
-      .catch((err) => {
-        console.error("Failed to load group users:", err);
-      });
-  }, []);
+      .then((res) => setGroupUsers(res.data))
+      .catch((err) => console.error("Failed to load group users:", err));
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -101,6 +99,8 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
               <option value="months">Months</option>
             </select>
           </div>
+
+          <GroupSelector onSelect={handleGroupChange} />
 
           <select
             className="form-select mb-2"
