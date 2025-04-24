@@ -1,29 +1,42 @@
 const Group = require("../models/group");
 const User = require("../models/user");
 
-// Create a new group
+//create new group
 exports.createGroup = async (req, res) => {
   const { name } = req.body;
 
   try {
+    const userId = req.user?.id; // ✅ Make sure this exists
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
     const group = await Group.create({ name });
+
+    // ✅ Associate the user with the new group
+    const user = await User.findByPk(userId);
+    user.GroupId = group.id;
+    await user.save();
+
     res.status(201).json(group);
   } catch (err) {
     console.error("Create group error:", err);
     res.status(500).json({ message: "Server error creating group" });
   }
 };
-
-// Get all groups
+// Get group of the current user 
 exports.getGroups = async (req, res) => {
   try {
-    const groups = await Group.findAll();
-    res.status(200).json(groups);
+    const user = await User.findByPk(req.user.id);
+
+    if (!user.GroupId) return res.status(200).json([]); // no group
+
+    const group = await Group.findByPk(user.GroupId);
+    res.status(200).json([group]);
   } catch (err) {
     console.error("Fetch groups error:", err);
     res.status(500).json({ message: "Server error fetching groups" });
   }
 };
+
 
 // Get users in a specific group
 exports.getUsersInGroup = async (req, res) => {

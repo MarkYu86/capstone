@@ -19,7 +19,6 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
     if (!groupId) return;
 
     const token = localStorage.getItem("token");
-
     axios
       .get(`http://localhost:3001/api/groups/${groupId}/users`, {
         headers: {
@@ -40,7 +39,7 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
   
     const frequency = `Every ${formData.repeatInterval} ${formData.repeatUnit}`;
     const trimmedNotes = formData.notes.trim();
-  
+    const user = JSON.parse(localStorage.getItem("user"));
     const payload = {
       name: formData.name,
       frequency,
@@ -48,7 +47,7 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
       assignedTo: formData.assignedTo,
       notes: trimmedNotes || null,
       status: "incomplete",
-      UserId: 1,
+      UserId: user?.id,
     };
   
     try {

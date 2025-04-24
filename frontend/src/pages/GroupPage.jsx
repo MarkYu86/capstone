@@ -15,19 +15,38 @@ function GroupPage() {
   }, []);
 
   const fetchGroups = async () => {
-    const res = await axios.get("http://localhost:3001/api/groups");
-    setGroups(res.data);
+    const token = localStorage.getItem("token");
+  
+    try {
+      const res = await axios.get("http://localhost:3001/api/groups", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setGroups(res.data);
+    } catch (err) {
+      console.error("Error fetching user groups:", err);
+    }
   };
 
   const handleCreate = async () => {
     if (!groupName.trim()) return;
-
+  
     try {
-      await axios.post("http://localhost:3001/api/groups", { name: groupName });
+      const token = localStorage.getItem("token"); // ✅ Add this
+      await axios.post(
+        "http://localhost:3001/api/groups",
+        { name: groupName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Send the token
+          },
+        }
+      );
       setGroupName("");
-      fetchGroups();
+      fetchGroups(); // Refresh list
     } catch (err) {
-      console.error("Group creation failed", err);
+      console.error("Group creation failed", err); // Log error
       alert("Failed to create group.");
     }
   };

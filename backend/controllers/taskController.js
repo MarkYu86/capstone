@@ -26,16 +26,17 @@ exports.createTask = async (req, res) => {
 //GET ALL TASK
 exports.getAllTasks = async (req, res) => {
   try {
-    console.log("⏳ Attempting to fetch all tasks...");
-    const tasks = await Task.findAll();
-    console.log("Fetched tasks:", tasks);
+    const tasks = await Task.findAll({
+      where: { UserId: req.user.id },
+      order: [["createdAt", "DESC"]],
+    });
     res.status(200).json(tasks);
   } catch (err) {
     console.error("Error fetching tasks:", err);
-    console.error(err);
-    res.status(500).json({ message: "Server error fetching tasks,check JSON" });
+    res.status(500).json({ message: "Server error fetching tasks" });
   }
 };
+
 // GET task by ID
 exports.getTaskById = async (req, res) => {
   try {
