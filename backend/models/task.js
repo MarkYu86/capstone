@@ -12,8 +12,8 @@ const Task = sequelize.define("Task", {
     defaultValue: "incomplete",
   },
   frequency: {
-    type: DataTypes.ENUM("once", "daily", "weekly", "monthly"),
-    defaultValue: "once",
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   dueDate: {
     type: DataTypes.DATE,

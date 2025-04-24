@@ -37,32 +37,33 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-
+  
+    const frequency = `Every ${formData.repeatInterval} ${formData.repeatUnit}`;
+    const trimmedNotes = formData.notes.trim();
+  
+    const payload = {
+      name: formData.name,
+      frequency,
+      dueDate: new Date(),
+      assignedTo: formData.assignedTo,
+      notes: trimmedNotes || null,
+      status: "incomplete",
+      UserId: 1,
+    };
+  
     try {
-      await axios.post(
-        "http://localhost:3001/api/tasks",
-        {
-          name: formData.name,
-          frequency: "custom",
-          dueDate: new Date(), // fallback for required field
-          assignedTo: formData.assignedTo,
-          notes: `Repeat every ${formData.repeatInterval} ${formData.repeatUnit}. ${formData.notes}`,
-          status: "incomplete",
-          UserId: 1, // Optional: from JWT or context
+      await axios.post("http://localhost:3001/api/tasks", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      onTaskCreated(); // Refresh task list
+      });
+  
+      onTaskCreated();
     } catch (err) {
       alert("Failed to create task.");
-      console.error(err);
     }
   };
+  
 
   return (
     <div className="card mb-4">
@@ -127,7 +128,7 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
           />
 
           <button className="btn btn-success me-2" type="submit">
-            Save Task
+            Add Task
           </button>
   
         </form>
