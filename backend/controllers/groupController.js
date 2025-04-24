@@ -81,3 +81,19 @@ exports.inviteUserToGroup = async (req, res) => {
     res.status(500).json({ message: "Server error inviting user" });
   }
 };
+//Brose group members under each group list
+exports.getGroupMembers = async (req, res) => {
+  try {
+    const groupId = req.params.id;
+
+    const users = await User.findAll({
+      where: { GroupId: groupId },
+      attributes: ["id", "name", "email"],
+    });
+
+    res.json(users);
+  } catch (err) {
+    console.error("Get group members error:", err);
+    res.status(500).json({ message: "Server error fetching members" });
+  }
+};
