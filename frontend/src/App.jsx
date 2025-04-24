@@ -4,11 +4,13 @@ import RegisterPage from "./pages/RegisterPage";
 import Navbar from "./components/Navbar";
 import DashboardPage from "./pages/DashboardPage";
 import GroupPage from "./pages/GroupPage";
+import Sidebar from "./components/Sidebar"
 
 function App() {
   return (
     <Router>
-      <Navbar />
+      <Navbar/>
+      <Sidebar/>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

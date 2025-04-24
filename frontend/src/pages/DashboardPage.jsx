@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
 import CreateTaskForm from "../components/CreateTaskForm";
 import TaskCard from "../components/TaskCard";
 
@@ -60,7 +59,6 @@ function DashboardPage() {
 
   return (
     <div className="d-flex">
-      {/* <Sidebar /> */}
       <div className="container mt-4">
         <h1>Dashboard</h1>
         {user && (
@@ -76,13 +74,11 @@ function DashboardPage() {
           {showForm ? "Close Form" : "Add New Task"}
         </button>
         <button
-  className="btn btn-outline-primary me-3"
-  onClick={() => navigate("/groups")}
->
-  Create New Group
-</button>
-
-
+          className="btn btn-outline-primary me-3"
+          onClick={() => navigate("/groups")}
+        >
+          Create New Group
+        </button>
         {showForm && (
           <CreateTaskForm
             onTaskCreated={() => {
