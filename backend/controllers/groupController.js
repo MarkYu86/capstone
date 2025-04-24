@@ -40,3 +40,44 @@ exports.getUsersInGroup = async (req, res) => {
     res.status(500).json({ message: "Server error fetching users" });
   }
 };
+
+//delete group
+exports.deleteGroup = async (req, res) => {
+  try {
+    const group = await Group.findByPk(req.params.id);
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    await group.destroy();
+    res.status(200).json({ message: "Group deleted" });
+  } catch (err) {
+    console.error("Delete group error:", err);
+    res.status(500).json({ message: "Server error deleting group" });
+  }
+};
+
+exports.inviteUserToGroup = async (req, res) => {
+  const groupId = req.params.id;
+  const { email } = req.body;
+
+  try {
+    const group = await Group.findByPk(groupId);
+    if (!group) return res.status(404).json({ message: "Group not found" });
+    console.log("Group:", group);
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    console.log("User:", user);
+
+    if (user.GroupId === group.id) {
+      return res.status(400).json({ message: "User already in this group" });
+    }
+
+    user.GroupId = group.id;
+    await user.save();
+
+    res.status(200).json({ message: `User ${user.email} added to group ${group.name}` });
+  } catch (err) {
+    console.error("Invite user error:", err);
+    res.status(500).json({ message: "Server error inviting user" });
+  }
+};
