@@ -5,6 +5,7 @@ const userRoutes = require("./routes/userRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const task = require("./models/task");
 const taskRoutes = require("./routes/taskRoutes");
+const groupRoutes = require("./routes/groupRoutes");
 
 const app = express();
 app.use(cors());
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/protected", protectedRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/groups", groupRoutes);
 
 sequelize.sync().then(() => {
   console.log('Database synced');
