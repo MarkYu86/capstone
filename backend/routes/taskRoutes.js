@@ -10,12 +10,12 @@ router.post("/", verifyToken, taskController.createTask);
 router.get("/", verifyToken, taskController.getAllTasks);
 
 //READ one
-router.get("/:id", taskController.getTaskById);
+router.get("/:id", verifyToken, taskController.getTaskById);
 
 //UPDATE
-router.put("/:id", taskController.updateTask);
+router.put("/:id", verifyToken, taskController.updateTask);
 
 //DELETE
-router.delete("/:id", taskController.deleteTask);
+router.delete("/:id", verifyToken, taskController.deleteTask);
 
 module.exports = router;

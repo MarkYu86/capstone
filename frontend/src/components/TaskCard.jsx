@@ -7,7 +7,11 @@ function TaskCard({ task, onDelete, onEdit }) {
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/tasks/${task.id}`);
+      await axios.delete(`http://localhost:3001/api/tasks/${task.id}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       onDelete();
     } catch (err) {
       console.error("Delete failed", err);
