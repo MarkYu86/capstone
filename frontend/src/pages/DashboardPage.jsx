@@ -10,7 +10,6 @@ function DashboardPage() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
 
   const fetchTasks = () => {
     const token = localStorage.getItem("token");
@@ -46,7 +45,12 @@ function DashboardPage() {
         },
       })
       .then((res) => {
-        setUser({ name: res.data.name, email: res.data.email });
+        console.log("User from dashboard API:", res.data); 
+        setUser({
+          name: res.data.name,
+          email: res.data.email,
+          groupId: res.data.groupId,
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -62,9 +66,26 @@ function DashboardPage() {
       <div className="container mt-4">
         <h1>Dashboard</h1>
         {user && (
-          <p>
-            Welcome back, <strong>{user.name || user.email}</strong> 👋
-          </p>
+          <>
+            <p>
+              Welcome back, <strong>{user.name || user.email}</strong> 👋
+            </p>
+            {!user.groupId && (
+              <p>
+                Need team work?{" "}
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/groups");
+                  }}
+                >
+                  Click here
+                </a>{" "}
+                to create a group!
+              </p>
+            )}
+          </>
         )}
 
         <button
@@ -73,12 +94,7 @@ function DashboardPage() {
         >
           {showForm ? "Close Form" : "Add New Task"}
         </button>
-        <button
-          className="btn btn-outline-primary me-3"
-          onClick={() => navigate("/groups")}
-        >
-          Create New Group
-        </button>
+
         {showForm && (
           <CreateTaskForm
             onTaskCreated={() => {
@@ -102,7 +118,6 @@ function DashboardPage() {
                   onDelete={fetchTasks}
                   onEdit={(task) => {
                     alert("Edit task coming soon!");
-                    setEditingTask(task);
                   }}
                 />
               </div>

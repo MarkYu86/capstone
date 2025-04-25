@@ -1,17 +1,17 @@
 const Group = require("../models/group");
 const User = require("../models/user");
 
-//create new group
+//Create new group
 exports.createGroup = async (req, res) => {
   const { name } = req.body;
 
   try {
-    const userId = req.user?.id; // ✅ Make sure this exists
+    const userId = req.user?.id; 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const group = await Group.create({ name });
 
-    // ✅ Associate the user with the new group
+    //Associate the user with the new group
     const user = await User.findByPk(userId);
     user.GroupId = group.id;
     await user.save();
@@ -22,7 +22,7 @@ exports.createGroup = async (req, res) => {
     res.status(500).json({ message: "Server error creating group" });
   }
 };
-// Get group of the current user 
+// Get group of the current user
 exports.getGroups = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id);
@@ -36,7 +36,6 @@ exports.getGroups = async (req, res) => {
     res.status(500).json({ message: "Server error fetching groups" });
   }
 };
-
 
 // Get users in a specific group
 exports.getUsersInGroup = async (req, res) => {
@@ -88,7 +87,9 @@ exports.inviteUserToGroup = async (req, res) => {
     user.GroupId = group.id;
     await user.save();
 
-    res.status(200).json({ message: `User ${user.email} added to group ${group.name}` });
+    res
+      .status(200)
+      .json({ message: `User ${user.email} added to group ${group.name}` });
   } catch (err) {
     console.error("Invite user error:", err);
     res.status(500).json({ message: "Server error inviting user" });

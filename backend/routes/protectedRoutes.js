@@ -8,6 +8,7 @@ router.get("/dashboard", verifyToken, (req, res) => {
     id: req.user.id,
     name: req.user.name,
     email: req.user.email,
+    groupId: req.user.GroupId,
   });
 });
 
