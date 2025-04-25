@@ -5,7 +5,7 @@ const User = require("../models/user");
 exports.createTask = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id);
-    const groupId = user.GroupId;
+    const groupId = user.GroupId || null;
 
     if (!groupId) {
       return res.status(400).json({ message: "User is not in a group" });

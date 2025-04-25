@@ -1,29 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import GroupSelector from "./GroupSelector";
 
-function CreateTaskForm({ onTaskCreated, onCancel }) {
+function CreateTaskForm({ onTaskCreated }) {
   const [formData, setFormData] = useState({
     name: "",
     repeatInterval: 1,
     repeatUnit: "days",
-    assignedTo: "",
     notes: "",
+    assignedTo: "",
   });
 
   const [groupUsers, setGroupUsers] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState("");
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+
+  const toggleAdvancedOptions = () => {
+    setShowAdvancedOptions((prev) => !prev);
+  };
 
   const handleGroupChange = (groupId) => {
     setSelectedGroup(groupId);
-    if (!groupId) return;
+
+    if (!groupId) {
+      setGroupUsers([]);
+      return;
+    }
 
     const token = localStorage.getItem("token");
     axios
       .get(`http://localhost:3001/api/groups/${groupId}/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setGroupUsers(res.data))
       .catch((err) => console.error("Failed to load group users:", err));
@@ -36,39 +43,40 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-  
-    const frequency = `Every ${formData.repeatInterval} ${formData.repeatUnit}`;
-    const trimmedNotes = formData.notes.trim();
-    const user = JSON.parse(localStorage.getItem("user"));
+
     const payload = {
       name: formData.name,
-      frequency,
+      frequency: `Every ${formData.repeatInterval} ${formData.repeatUnit}`,
       dueDate: new Date(),
-      assignedTo: formData.assignedTo,
-      notes: trimmedNotes || null,
+      notes: formData.notes.trim() || null,
       status: "incomplete",
-      UserId: user?.id,
     };
-  
+
+    if (selectedGroup) {
+      payload.groupId = selectedGroup;
+    }
+    if (formData.assignedTo) {
+      payload.assignedTo = formData.assignedTo;
+    }
+
     try {
       await axios.post("http://localhost:3001/api/tasks", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       onTaskCreated();
     } catch (err) {
+      console.error(err);
       alert("Failed to create task.");
     }
   };
-  
 
   return (
     <div className="card mb-4">
       <div className="card-header">Create New Task</div>
       <div className="card-body">
         <form onSubmit={handleSubmit}>
+          {/* Task Name */}
           <input
             className="form-control mb-2"
             name="name"
@@ -78,6 +86,7 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
             required
           />
 
+          {/* Frequency */}
           <div className="d-flex mb-2">
             <input
               type="number"
@@ -100,23 +109,7 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
             </select>
           </div>
 
-          <GroupSelector onSelect={handleGroupChange} />
-
-          <select
-            className="form-select mb-2"
-            name="assignedTo"
-            value={formData.assignedTo}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Assign to...</option>
-            {groupUsers.map((user) => (
-              <option key={user.id} value={user.name}>
-                {user.name} ({user.email})
-              </option>
-            ))}
-          </select>
-
+          {/* Notes */}
           <textarea
             className="form-control mb-2"
             name="notes"
@@ -126,10 +119,42 @@ function CreateTaskForm({ onTaskCreated, onCancel }) {
             onChange={handleChange}
           />
 
-          <button className="btn btn-success me-2" type="submit">
+          {/* Toggle Button for Group & Assign */}
+          <div className="mb-2">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm"
+              onClick={toggleAdvancedOptions}
+            >
+              {showAdvancedOptions ? "Hide Group & Assign ▲" : "Select Group & Assign ▼"}
+            </button>
+          </div>
+
+          {/* Collapsible Section */}
+          {showAdvancedOptions && (
+            <>
+              <GroupSelector onSelect={handleGroupChange} />
+
+              <select
+                className="form-select mt-2"
+                name="assignedTo"
+                value={formData.assignedTo}
+                onChange={handleChange}
+              >
+                <option value="">Assign to (optional)...</option>
+                {groupUsers.map((user) => (
+                  <option key={user.id} value={user.name}>
+                    {user.name || user.email}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+
+          {/* Submit Button */}
+          <button className="btn btn-success me-2 mt-3" type="submit">
             Add Task
           </button>
-  
         </form>
       </div>
     </div>
