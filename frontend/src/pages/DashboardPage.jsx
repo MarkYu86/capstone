@@ -45,7 +45,7 @@ function DashboardPage() {
         },
       })
       .then((res) => {
-        console.log("User from dashboard API:", res.data); 
+        console.log("User from dashboard API:", res.data);
         setUser({
           name: res.data.name,
           email: res.data.email,
@@ -116,9 +116,7 @@ function DashboardPage() {
                 <TaskCard
                   task={task}
                   onDelete={fetchTasks}
-                  onEdit={(task) => {
-                    alert("Edit task coming soon!");
-                  }}
+                  onEdit={fetchTasks}
                 />
               </div>
             ))}
