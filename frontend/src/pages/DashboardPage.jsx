@@ -116,7 +116,7 @@ function DashboardPage() {
                 <TaskCard
                   task={task}
                   onDelete={fetchTasks}
-                  onEdit={fetchTasks}
+                  onEdit={fetchTasks} // Refresh tasks after editing
                 />
               </div>
             ))}

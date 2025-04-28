@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import EditTaskForm from "./EditTaskForm";
 
 function TaskCard({ task, onDelete, onEdit }) {
   const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
+  const [editMode, setEditMode] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     setDaysLeft(calculateDaysLeft());
   }, [task.dueDate]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setDaysLeft(calculateDaysLeft());
-    }, 5000); // Update every 5 seconds (you can change to 1000ms for every second)
-
+    }, 5000);
     return () => clearInterval(interval);
   }, [task.dueDate]);
 
@@ -77,25 +82,60 @@ function TaskCard({ task, onDelete, onEdit }) {
 
   let dueText = "";
   if (daysLeft < 0) {
-    dueText = `Overdue by ${Math.abs(daysLeft)} day${Math.abs(daysLeft) > 1 ? "s" : ""}`;
+    dueText = `Overdue by ${Math.abs(daysLeft)} day${
+      Math.abs(daysLeft) > 1 ? "s" : ""
+    }`;
   } else if (daysLeft === 0) {
     dueText = "Due Today";
   } else {
     dueText = `Due in ${daysLeft} day${daysLeft > 1 ? "s" : ""}`;
   }
 
+  const handleEditClick = () => {
+    setEditMode(true);
+  };
+
   return (
     <div className="card h-100 shadow-sm">
       <div className="card-body">
-        <h5 className="card-title">{task.name}</h5>
-        <h6 className="text-muted">{task.assignedTo}</h6>
-        <p className="card-text text-muted">{dueText}</p>
-        <button className="btn btn-sm btn-outline-success me-2" onClick={handleDidIt}>
-          Did it!
-        </button>
-        <button className="btn btn-sm btn-outline-danger" onClick={handleDelete}>
-          Delete
-        </button>
+        {editMode ? (
+          <EditTaskForm
+            task={task}
+            onTaskUpdated={() => {
+              onEdit();
+              setEditMode(false);
+            }}
+          />
+        ) : (
+          <>
+            <h5 className="card-title">{task.name}</h5>
+            <h6 className="text-muted">{task.assignedTo}</h6>
+            <p className="card-text text-muted">{dueText}</p>
+            {task.notes && (
+              <p className="card-text">
+                <strong>Notes:</strong> {task.notes}
+              </p>
+            )}
+            <button
+              className="btn btn-sm btn-outline-success me-2"
+              onClick={handleDidIt}
+            >
+              Did it!
+            </button>
+            <button
+              className="btn btn-sm btn-outline-warning me-2"
+              onClick={handleEditClick}
+            >
+              Edit
+            </button>
+            <button
+              className="btn btn-sm btn-outline-danger"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
