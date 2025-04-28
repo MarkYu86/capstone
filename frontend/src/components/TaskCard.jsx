@@ -1,16 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function TaskCard({ task, onDelete, onEdit }) {
-  const handleDelete = async () => {
-    const confirm = window.confirm("Are you sure you want to delete this task?");
-    if (!confirm) return;
+  const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
+  useEffect(() => {
+    setDaysLeft(calculateDaysLeft());
+  }, [task.dueDate]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDaysLeft(calculateDaysLeft());
+    }, 5000); // Update every 5 seconds (you can change to 1000ms for every second)
 
+    return () => clearInterval(interval);
+  }, [task.dueDate]);
+
+  function calculateDaysLeft() {
+    const dueDate = new Date(task.dueDate);
+    const today = new Date();
+    const diffTime = dueDate - today;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  const handleDelete = async () => {
+    if (!window.confirm("Delete this task?")) return;
     try {
       await axios.delete(`http://localhost:3001/api/tasks/${task.id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       onDelete();
     } catch (err) {
@@ -23,11 +38,11 @@ function TaskCard({ task, onDelete, onEdit }) {
     const match = task.frequency.match(/Every (\d+) (\w+)/);
     if (!match) return alert("Invalid frequency format");
 
-    const [, amount, unit] = match;
-    const interval = parseInt(amount);
-    const today = new Date(); 
-    const newDueDate = new Date(today); 
-    
+    const interval = parseInt(match[1]);
+    const unit = match[2];
+    const today = new Date();
+    const newDueDate = new Date(today);
+
     switch (unit) {
       case "days":
         newDueDate.setDate(today.getDate() + interval);
@@ -43,34 +58,38 @@ function TaskCard({ task, onDelete, onEdit }) {
     }
 
     try {
-      await axios.put(`http://localhost:3001/api/tasks/${task.id}`, {
-        dueDate: newDueDate,
-        status: "incomplete", // or "active"
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      await axios.put(
+        `http://localhost:3001/api/tasks/${task.id}`,
+        {
+          dueDate: newDueDate,
+          status: "incomplete",
         },
-      });
-
-      onEdit(); // refresh the task list
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      onEdit();
     } catch (err) {
       console.error("Failed to update task", err);
       alert("Error updating task.");
     }
   };
 
-  const daysLeft = Math.ceil(
-    (new Date(task.dueDate) - new Date()) / (1000 * 60 * 60 * 24)
-  );
+  let dueText = "";
+  if (daysLeft < 0) {
+    dueText = `Overdue by ${Math.abs(daysLeft)} day${Math.abs(daysLeft) > 1 ? "s" : ""}`;
+  } else if (daysLeft === 0) {
+    dueText = "Due Today";
+  } else {
+    dueText = `Due in ${daysLeft} day${daysLeft > 1 ? "s" : ""}`;
+  }
 
   return (
     <div className="card h-100 shadow-sm">
       <div className="card-body">
         <h5 className="card-title">{task.name}</h5>
-      <h6>{task.assignedTo} </h6> 
-        <p className="card-text text-muted">
-          Due in {daysLeft <= 0 ? "Today" : `${daysLeft} day${daysLeft > 1 ? "s" : ""}`}
-        </p>
+        <h6 className="text-muted">{task.assignedTo}</h6>
+        <p className="card-text text-muted">{dueText}</p>
         <button className="btn btn-sm btn-outline-success me-2" onClick={handleDidIt}>
           Did it!
         </button>

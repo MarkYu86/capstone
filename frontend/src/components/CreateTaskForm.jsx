@@ -76,7 +76,6 @@ function CreateTaskForm({ onTaskCreated }) {
       <div className="card-header">Create New Task</div>
       <div className="card-body">
         <form onSubmit={handleSubmit}>
-          {/* Task Name */}
           <input
             className="form-control mb-2"
             name="name"
@@ -86,7 +85,6 @@ function CreateTaskForm({ onTaskCreated }) {
             required
           />
 
-          {/* Frequency */}
           <div className="d-flex mb-2">
             <input
               type="number"
@@ -109,7 +107,6 @@ function CreateTaskForm({ onTaskCreated }) {
             </select>
           </div>
 
-          {/* Notes */}
           <textarea
             className="form-control mb-2"
             name="notes"
@@ -119,7 +116,6 @@ function CreateTaskForm({ onTaskCreated }) {
             onChange={handleChange}
           />
 
-          {/* Toggle Button for Group & Assign */}
           <div className="mb-2">
             <button
               type="button"
@@ -130,11 +126,9 @@ function CreateTaskForm({ onTaskCreated }) {
             </button>
           </div>
 
-          {/* Collapsible Section */}
           {showAdvancedOptions && (
             <>
               <GroupSelector onSelect={handleGroupChange} />
-
               <select
                 className="form-select mt-2"
                 name="assignedTo"
@@ -151,7 +145,6 @@ function CreateTaskForm({ onTaskCreated }) {
             </>
           )}
 
-          {/* Submit Button */}
           <button className="btn btn-success me-2 mt-3" type="submit">
             Add Task
           </button>
