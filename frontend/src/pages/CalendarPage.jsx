@@ -7,7 +7,9 @@ function CalendarPage() {
   const [taskMap, setTaskMap] = useState({});
   const [currentDate, setCurrentDate] = useState(new Date());
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState(localStorage.getItem("selectedGroupId") || "");
+  const [selectedGroup, setSelectedGroup] = useState(
+    localStorage.getItem("selectedGroupId") || ""
+  );
 
   useEffect(() => {
     fetchGroups();
@@ -41,9 +43,12 @@ function CalendarPage() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await axios.get(`http://localhost:3001/api/calendar/${groupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `http://localhost:3001/api/calendar/${groupId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setTasks(res.data);
       organizeTasks(res.data);
     } catch (err) {
@@ -74,7 +79,9 @@ function CalendarPage() {
     const cells = [];
 
     for (let i = 0; i < firstDay; i++) {
-      cells.push(<div key={`empty-${i}`} className="calendar-cell empty"></div>);
+      cells.push(
+        <div key={`empty-${i}`} className="calendar-cell empty"></div>
+      );
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
@@ -87,7 +94,8 @@ function CalendarPage() {
 
       if (dayTasks.length > 0) {
         const overdue = dayTasks.some(
-          (task) => new Date(task.dueDate) < new Date() && task.status !== "complete"
+          (task) =>
+            new Date(task.dueDate) < new Date() && task.status !== "complete"
         );
         const complete = dayTasks.every((task) => task.status === "complete");
 
@@ -142,14 +150,26 @@ function CalendarPage() {
       </div>
 
       <div className="d-flex justify-content-between mb-2">
-        <button className="btn btn-outline-primary" onClick={() => changeMonth(-1)}>
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => changeMonth(-1)}
+        >
           ⬅️ Previous
         </button>
-        <button className="btn btn-outline-primary" onClick={() => changeMonth(1)}>
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => changeMonth(1)}
+        >
           Next ➡️
         </button>
       </div>
-
+      <div className="calendar-header">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <div key={day} className="calendar-day-header">
+            {day}
+          </div>
+        ))}
+      </div>
       <div className="calendar-grid">{renderCalendar()}</div>
     </div>
   );
