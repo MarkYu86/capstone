@@ -39,14 +39,14 @@ function GroupPage() {
         { name: groupName },
         {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       setGroupName("");
-      fetchGroups(); 
+      fetchGroups();
     } catch (err) {
-      console.error("Group creation failed", err); 
+      console.error("Group creation failed", err);
       alert("Failed to create group.");
     }
   };
@@ -73,7 +73,7 @@ function GroupPage() {
 
   const toggleMembers = async (groupId) => {
     if (expandedGroupId === groupId) {
-      setExpandedGroupId(null); 
+      setExpandedGroupId(null);
       return;
     }
 
@@ -109,7 +109,7 @@ function GroupPage() {
         }
       );
       alert("User removed.");
-      fetchGroupUsers(); 
+      fetchGroupUsers();
     } catch (err) {
       console.error(err);
       alert("Failed to remove user.");
@@ -120,7 +120,6 @@ function GroupPage() {
     <>
       <div className="container mt-4">
         <h2>Groups</h2>
-
         <div className="input-group mb-3" style={{ maxWidth: "400px" }}>
           <input
             className="form-control"
@@ -151,12 +150,7 @@ function GroupPage() {
                   >
                     Invite
                   </button>
-                  <button
-                    className="btn btn-sm btn-danger"
-                    onClick={() => handleRemoveMember(user.id)}
-                  >
-                    Remove
-                  </button>
+
                   <button
                     className="btn btn-outline-danger btn-sm"
                     onClick={() => handleDelete(g.id)}
@@ -172,8 +166,17 @@ function GroupPage() {
                     <li className="list-group-item">No members yet.</li>
                   ) : (
                     groupMembers[g.id].map((member) => (
-                      <li key={member.id} className="list-group-item">
+                      <li
+                        key={member.id}
+                        className="list-group-item d-flex justify-content-between align-items-center"
+                      >
                         {member.name ? member.name : member.email}
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => handleRemoveMember(member.id)}
+                        >
+                          Remove
+                        </button>
                       </li>
                     ))
                   )}

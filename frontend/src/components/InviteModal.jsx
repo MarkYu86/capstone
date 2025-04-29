@@ -20,7 +20,7 @@ function InviteModal({ group, show, onClose, onSuccess }) {
 
       alert(res.data.message);
       setEmail("");
-      onSuccess(); // Optional callback after invite
+      onSuccess();
       onClose();
     } catch (err) {
       console.error("Invite failed:", err);
@@ -48,11 +48,8 @@ function InviteModal({ group, show, onClose, onSuccess }) {
             />
           </div>
           <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>
-              Cancel
-            </button>
             <button className="btn btn-primary" onClick={handleInvite}>
-              Send Invite
+              Add
             </button>
           </div>
         </div>
