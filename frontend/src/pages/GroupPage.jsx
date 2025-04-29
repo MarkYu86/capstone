@@ -101,7 +101,7 @@ function GroupPage() {
         <div className="input-group mb-3" style={{ maxWidth: "400px" }}>
           <input
             className="form-control"
-            placeholder="New group name"
+            placeholder="Enter group name here"
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
           />
