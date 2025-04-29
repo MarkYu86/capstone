@@ -111,9 +111,18 @@ function CalendarPage() {
       }
 
       cells.push(
-        <div key={day} className={cellClass} title={tooltip}>
+        <div key={day} className={`${cellClass} calendar-tooltip-container`}>
           <div className="date-number">{day}</div>
           {dayTasks.length > 0 && <div className="dot"></div>}
+          {dayTasks.length > 0 && (
+            <div className="calendar-tooltip">
+              {dayTasks.map((task, idx) => (
+                <div key={idx}>
+                  <strong>{task.name}</strong> {task.assignedTo}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       );
     }
@@ -149,18 +158,24 @@ function CalendarPage() {
         </select>
       </div>
 
-      <div className="d-flex justify-content-between mb-2">
+      <div className="calendar-header d-flex justify-content-between align-items-center mb-3">
         <button
           className="btn btn-outline-primary"
           onClick={() => changeMonth(-1)}
         >
-          ⬅️ Previous
+          Previous
         </button>
+        <h3 className="m-0">
+          {currentDate.toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+        </h3>
         <button
           className="btn btn-outline-primary"
           onClick={() => changeMonth(1)}
         >
-          Next ➡️
+          Next
         </button>
       </div>
       <div className="calendar-header">
