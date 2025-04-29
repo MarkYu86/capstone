@@ -10,5 +10,7 @@ router.delete("/:id", groupController.deleteGroup);
 
 router.post("/:id/invite", verifyToken, groupController.inviteUserToGroup);
 router.get("/:id/members", verifyToken, groupController.getGroupMembers);
+router.put("/remove/:userIdToRemove", verifyToken, groupController.removeMember);
+
 
 module.exports = router;

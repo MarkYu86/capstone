@@ -16,7 +16,7 @@ function GroupPage() {
 
   const fetchGroups = async () => {
     const token = localStorage.getItem("token");
-  
+
     try {
       const res = await axios.get("http://localhost:3001/api/groups", {
         headers: {
@@ -31,22 +31,22 @@ function GroupPage() {
 
   const handleCreate = async () => {
     if (!groupName.trim()) return;
-  
+
     try {
-      const token = localStorage.getItem("token"); // ✅ Add this
+      const token = localStorage.getItem("token");
       await axios.post(
         "http://localhost:3001/api/groups",
         { name: groupName },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Send the token
+            Authorization: `Bearer ${token}`, 
           },
         }
       );
       setGroupName("");
-      fetchGroups(); // Refresh list
+      fetchGroups(); 
     } catch (err) {
-      console.error("Group creation failed", err); // Log error
+      console.error("Group creation failed", err); 
       alert("Failed to create group.");
     }
   };
@@ -64,7 +64,7 @@ function GroupPage() {
 
     try {
       await axios.delete(`http://localhost:3001/api/groups/${groupId}`);
-      fetchGroups(); // refresh list
+      fetchGroups();
     } catch (err) {
       console.error("Delete failed:", err);
       alert("Failed to delete group.");
@@ -73,7 +73,7 @@ function GroupPage() {
 
   const toggleMembers = async (groupId) => {
     if (expandedGroupId === groupId) {
-      setExpandedGroupId(null); // collapse if already open
+      setExpandedGroupId(null); 
       return;
     }
 
@@ -90,6 +90,29 @@ function GroupPage() {
     } catch (err) {
       console.error("Error fetching group members:", err);
       alert("Failed to load members.");
+    }
+  };
+
+  const handleRemoveMember = async (userId) => {
+    const confirm = window.confirm(
+      "Are you sure you want to remove this user?"
+    );
+    if (!confirm) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:3001/api/groups/remove/${userId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("User removed.");
+      fetchGroupUsers(); 
+    } catch (err) {
+      console.error(err);
+      alert("Failed to remove user.");
     }
   };
 
@@ -121,13 +144,18 @@ function GroupPage() {
                     onClick={() => toggleMembers(g.id)}
                   >
                     {expandedGroupId === g.id ? "▲" : "▼"}
-
                   </button>
                   <button
                     className="btn btn-outline-primary btn-sm me-2"
                     onClick={() => handleInvite(g)}
                   >
                     Invite
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => handleRemoveMember(user.id)}
+                  >
+                    Remove
                   </button>
                   <button
                     className="btn btn-outline-danger btn-sm"

@@ -112,3 +112,28 @@ exports.getGroupMembers = async (req, res) => {
   }
 };
 
+// Remove a user from a group
+exports.removeMember = async (req, res) => {
+  try {
+    const { userIdToRemove } = req.params;
+
+    const user = await User.findByPk(userIdToRemove);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Only allow removing if they are actually in a group
+    if (!user.GroupId) {
+      return res.status(400).json({ message: "User is not in any group." });
+    }
+
+    // Set the GroupId to null → removing from group
+    await user.update({ GroupId: null });
+
+    res.status(200).json({ message: "User removed from group." });
+  } catch (error) {
+    console.error("Error removing user:", error);
+    res.status(500).json({ message: "Server error removing user." });
+  }
+};
