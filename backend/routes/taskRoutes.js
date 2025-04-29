@@ -18,4 +18,6 @@ router.put("/:id", verifyToken, taskController.updateTask);
 //DELETE
 router.delete("/:id", verifyToken, taskController.deleteTask);
 
+// NEW: get tasks by groupId
+router.get("/group/:groupId", verifyToken, taskController.getTasksByGroup);
 module.exports = router;

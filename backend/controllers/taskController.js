@@ -111,3 +111,29 @@ exports.deleteTask = async (req, res) => {
     res.status(500).json({ message: "Server error deleting task" });
   }
 };
+
+// Get tasks for a specific group
+exports.getTasksByGroup = async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+
+    if (!groupId) {
+      return res.status(400).json({ message: "Group ID missing" });
+    }
+    // Get the current user
+    const user = await User.findByPk(req.user.id);
+    // Check if user belongs to the requested group
+    if (user.GroupId !== parseInt(groupId)) {
+      return res.status(403).json({ message: "Access denied: not in this group" });
+    }
+    // Fetch the tasks
+    const tasks = await Task.findAll({
+      where: { groupId },
+      order: [["dueDate", "ASC"]],
+    });
+    res.status(200).json(tasks);
+  } catch (err) {
+    console.error("Error fetching group tasks:", err);
+    res.status(500).json({ message: "Server error fetching group tasks" });
+  }
+};
