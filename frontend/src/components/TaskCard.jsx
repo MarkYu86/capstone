@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import EditTaskForm from "./EditTaskForm";
-import "../styles/TaskCard.css"
+import "../styles/TaskCard.css";
 
 function TaskCard({ task, onDelete, onEdit }) {
   const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
   const [editMode, setEditMode] = useState(false);
- 
 
   useEffect(() => {
     setDaysLeft(calculateDaysLeft());
@@ -116,24 +115,26 @@ function TaskCard({ task, onDelete, onEdit }) {
                 <strong>Notes:</strong> {task.notes}
               </p>
             )}
-            <button
-              className="btn btn-sm btn-outline-success me-2"
-              onClick={handleDidIt}
-            >
-              Did it!
-            </button>
-            <button
-              className="btn btn-sm btn-outline-warning me-2"
-              onClick={handleEditClick}
-            >
-              Edit
-            </button>
-            <button
-              className="btn btn-sm btn-outline-danger"
-              onClick={handleDelete}
-            >
-              Delete
-            </button>
+            <div className="task-buttons mt-2">
+              <button
+                className="btn btn-sm btn-outline-success me-2"
+                onClick={handleDidIt}
+              >
+                Did it!
+              </button>
+              <button
+                className="btn btn-sm btn-outline-warning me-2"
+                onClick={handleEditClick}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
           </>
         )}
       </div>

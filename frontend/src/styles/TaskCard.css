@@ -1,4 +1,3 @@
-/* Card styling */
 .card {
     background: linear-gradient(135deg, #c9e7fa, #ecfbff);
     border-radius: 1rem;
@@ -23,11 +22,20 @@
   .card-text {
     font-size: 0.95rem;
     color: #555;
-    word-break: break-word;  
+    word-break: break-word;
     overflow-wrap: anywhere; 
     white-space: normal;
   }
+  .task-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
   
+  .task-buttons .btn {
+    flex-shrink: 0;
+  }
   .card .btn {
     border: none;
     border-radius: 0.6rem;
