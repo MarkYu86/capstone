@@ -1,6 +1,7 @@
 const Task = require("../models/task");
 const User = require("../models/user");
 const Group = require("../models/group");
+const { Op } = require("sequelize");
 
 // 🔁 Utility: check if user is in a group
 const isUserInGroup = async (user, groupId) => {
@@ -11,11 +12,14 @@ const isUserInGroup = async (user, groupId) => {
 // ✅ Create a task (requires groupId in body)
 exports.createTask = async (req, res) => {
   const { groupId, ...taskData } = req.body;
-
+  console.log("Create task payload:", req.body);
   try {
     const user = await User.findByPk(req.user.id);
-    if (!(await isUserInGroup(user, groupId))) {
-      return res.status(403).json({ message: "You are not a member of this group" });
+    if (groupId) {
+      const isMember = await isUserInGroup(user, groupId);
+      if (!isMember) {
+        return res.status(403).json({ message: "You are not a member of this group" });
+      }
     }
 
     const task = await Task.create({
@@ -35,10 +39,25 @@ exports.createTask = async (req, res) => {
 exports.getAllTasks = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, { include: Group });
-
     const groupIds = user.Groups.map(group => group.id);
+    
+    let whereClause = {};
+
+    if (groupIds.length > 0) {
+      // If the user belongs to groups, return tasks that are either group tasks or personal tasks.
+      whereClause = {
+        [Op.or]: [
+          { groupId: groupIds },
+          { groupId: null, UserId: user.id }
+        ]
+      };
+    } else {
+      // User has no groups; just return personal tasks.
+      whereClause = { groupId: null, UserId: user.id };
+    }
+
     const tasks = await Task.findAll({
-      where: { groupId: groupIds },
+      where: whereClause,
       order: [["createdAt", "DESC"]],
     });
 
@@ -49,6 +68,7 @@ exports.getAllTasks = async (req, res) => {
   }
 };
 
+
 // ✅ Get task by ID (and check group membership)
 exports.getTaskById = async (req, res) => {
   try {
@@ -56,8 +76,15 @@ exports.getTaskById = async (req, res) => {
     if (!task) return res.status(404).json({ message: "Task not found" });
 
     const user = await User.findByPk(req.user.id);
-    if (!(await isUserInGroup(user, task.groupId))) {
-      return res.status(403).json({ message: "Not allowed to view this task" });
+
+    if (task.groupId) {
+      if (!(await isUserInGroup(user, task.groupId))) {
+        return res.status(403).json({ message: "Not allowed to view this task" });
+      }
+    } else {
+      if (task.UserId !== user.id) {
+        return res.status(403).json({ message: "Not allowed to access this personal task" });
+      }
     }
 
     res.status(200).json(task);
@@ -74,8 +101,14 @@ exports.updateTask = async (req, res) => {
     if (!task) return res.status(404).json({ message: "Task not found" });
 
     const user = await User.findByPk(req.user.id);
-    if (!(await isUserInGroup(user, task.groupId))) {
-      return res.status(403).json({ message: "Not allowed to update this task" });
+    if (task.groupId) {
+      if (!(await isUserInGroup(user, task.groupId))) {
+        return res.status(403).json({ message: "Not allowed to access this group task" });
+      }
+    } else {
+      if (task.UserId !== user.id) {
+        return res.status(403).json({ message: "Not allowed to access this personal task" });
+      }
     }
 
     await task.update(req.body);
@@ -93,8 +126,14 @@ exports.deleteTask = async (req, res) => {
     if (!task) return res.status(404).json({ message: "Task not found" });
 
     const user = await User.findByPk(req.user.id);
-    if (!(await isUserInGroup(user, task.groupId))) {
-      return res.status(403).json({ message: "Not allowed to delete this task" });
+    if (task.groupId) {
+      if (!(await isUserInGroup(user, task.groupId))) {
+        return res.status(403).json({ message: "Not allowed to access this group task" });
+      }
+    } else {
+      if (task.UserId !== user.id) {
+        return res.status(403).json({ message: "Not allowed to access this personal task" });
+      }
     }
 
     await task.destroy();

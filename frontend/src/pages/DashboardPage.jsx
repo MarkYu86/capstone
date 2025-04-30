@@ -19,6 +19,7 @@ function DashboardPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
+        console.log("Fetched tasks:", res.data);
         setTasks(res.data);
         setLoading(false);
       })
@@ -121,15 +122,18 @@ function DashboardPage() {
         <p>No tasks found for your groups.</p>
       ) : (
         <div className="row">
-          {tasks.map((task) => (
-            <div className="taskcard" key={task.id}>
-              <TaskCard
-                task={task}
-                onDelete={fetchTasks}
-                onEdit={fetchTasks}
-              />
-            </div>
-          ))}
+         {tasks.map((task) => {
+  console.log("Rendering task:", task); // 👈 now valid
+  return (
+    <div className="taskcard" key={task.id}>
+      <TaskCard
+        task={task}
+        onDelete={fetchTasks}
+        onEdit={fetchTasks}
+      />
+    </div>
+  );
+})}
         </div>
       )}
     </div>
