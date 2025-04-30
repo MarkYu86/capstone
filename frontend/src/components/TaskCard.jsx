@@ -95,7 +95,7 @@ function TaskCard({ task, onDelete, onEdit }) {
   };
 
   return (
-    <div className="card h-100 shadow-sm">
+    <div className="card shadow-sm">
       <div className="card-body">
         {editMode ? (
           <EditTaskForm

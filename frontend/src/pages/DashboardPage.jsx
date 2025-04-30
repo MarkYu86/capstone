@@ -62,67 +62,65 @@ function DashboardPage() {
   }, [navigate]);
 
   return (
-    <div className="d-flex">
-      <div className="container mt-4">
-        <h1>Dashboard</h1>
-        {user && (
-          <>
+    <div className="container mt-4">
+      <h1>Dashboard</h1>
+      {user && (
+        <>
+          <p>
+            Welcome back, <strong>{user.name || user.email}</strong> 👋
+          </p>
+          {!user.groupId && (
             <p>
-              Welcome back, <strong>{user.name || user.email}</strong> 👋
+              Need team work?{" "}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/groups");
+                }}
+              >
+                Click here
+              </a>{" "}
+              to create a group!
             </p>
-            {!user.groupId && (
-              <p>
-                Need team work?{" "}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/groups");
-                  }}
-                >
-                  Click here
-                </a>{" "}
-                to create a group!
-              </p>
-            )}
-          </>
-        )}
+          )}
+        </>
+      )}
 
-        <button
-          className="btn btn-primary mb-4"
-          onClick={() => setShowForm((prev) => !prev)}
-        >
-          {showForm ? "Close Form" : "Add New Task"}
-        </button>
+      <button
+        className="btn btn-primary mb-4"
+        onClick={() => setShowForm((prev) => !prev)}
+      >
+        {showForm ? "Close Form" : "Add New Task"}
+      </button>
 
-        {showForm && (
-          <CreateTaskForm
-            onTaskCreated={() => {
-              fetchTasks();
-              setShowForm(false);
-            }}
-            onCancel={() => setShowForm(false)}
-          />
-        )}
+      {showForm && (
+        <CreateTaskForm
+          onTaskCreated={() => {
+            fetchTasks();
+            setShowForm(false);
+          }}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
 
-        {loading ? (
-          <p>Loading tasks...</p>
-        ) : tasks.length === 0 ? (
-          <p>No tasks found.</p>
-        ) : (
-          <div className="row">
-            {tasks.map((task) => (
-              <div className="col-md-4 mb-4" key={task.id}>
-                <TaskCard
-                  task={task}
-                  onDelete={fetchTasks}
-                  onEdit={fetchTasks} // Refresh tasks after editing
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <p>Loading tasks...</p>
+      ) : tasks.length === 0 ? (
+        <p>No tasks found.</p>
+      ) : (
+        <div className="row">
+          {tasks.map((task) => (
+            <div className="taskcard" key={task.id}>
+              <TaskCard
+                task={task}
+                onDelete={fetchTasks}
+                onEdit={fetchTasks} // Refresh tasks after editing
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

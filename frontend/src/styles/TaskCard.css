@@ -1,81 +1,88 @@
 .card {
-    background: linear-gradient(135deg, #c9e7fa, #ecfbff);
-    border-radius: 1rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: none;
+  background: linear-gradient(135deg, #c9e7fa, #ecfbff);
+  border-radius: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  width: 100%;
+  max-width: 100%;
+}
+
+.taskcard {
+  margin: 5px
+}
+
+.card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 1rem 1.25rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  color: #2c3e50;
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: #555;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.task-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.task-buttons .btn {
+  flex-shrink: 0;
+}
+
+.card .btn {
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card .btn-outline-success {
+  background-color: #85C7DE;
+  color: #fff;
+}
+
+.card .btn-outline-success:hover {
+  background-color: #6FB7D0;
+}
+
+.card .btn-outline-warning {
+  background-color: #A0C4E2;
+  color: #fff;
+}
+
+.card .btn-outline-warning:hover {
+  background-color: #8FB7DB;
+}
+
+.card .btn-outline-danger {
+  background-color: #C6DBF0;
+  color: #333;
+}
+
+.card .btn-outline-danger:hover {
+  background-color: #B0C8E8;
+  color: #000;
+}
+
+@media (max-width: 767px) {
+  .card {
+    width: 100%;
   }
-  
-  .card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-body {
-    padding: 1rem 1.25rem;
-  }
-  
-  .card-title {
-    font-size: 1.25rem;
-    color: #2c3e50;
-  }
-  
-  .card-text {
-    font-size: 0.95rem;
-    color: #555;
-    word-break: break-word;
-    overflow-wrap: anywhere; 
-    white-space: normal;
-  }
-  .task-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-start;
-  }
-  
-  .task-buttons .btn {
-    flex-shrink: 0;
-  }
-  .card .btn {
-    border: none;
-    border-radius: 0.6rem;
-    padding: 0.4rem 0.8rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
-  }
-  
-  .card .btn-outline-success {
-    background-color: #85C7DE;
-    color: #fff;
-  }
-  
-  .card .btn-outline-success:hover {
-    background-color: #6FB7D0;
-  }
-  
-  .card .btn-outline-warning {
-    background-color: #A0C4E2;
-    color: #fff;
-  }
-  
-  .card .btn-outline-warning:hover {
-    background-color: #8FB7DB;
-  }
-  
-  .card .btn-outline-danger {
-    background-color: #C6DBF0;
-    color: #333;
-  }
-  
-  .card .btn-outline-danger:hover {
-    background-color: #B0C8E8;
-    color: #000;
-  }
-  
-  @media (max-width: 767px) {
-    .card {
-      width: 100%;
-      
-    }
-  }
+}
