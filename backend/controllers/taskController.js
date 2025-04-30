@@ -1,20 +1,27 @@
 const Task = require("../models/task");
 const User = require("../models/user");
+const Group = require("../models/group");
 
-// Create a task
+// 🔁 Utility: check if user is in a group
+const isUserInGroup = async (user, groupId) => {
+  const groups = await user.getGroups();
+  return groups.some(group => group.id === parseInt(groupId, 10));
+};
+
+// ✅ Create a task (requires groupId in body)
 exports.createTask = async (req, res) => {
+  const { groupId, ...taskData } = req.body;
+
   try {
     const user = await User.findByPk(req.user.id);
-    const groupId = user.GroupId || null;
-
-    if (!groupId) {
-      return res.status(400).json({ message: "User is not in a group" });
+    if (!(await isUserInGroup(user, groupId))) {
+      return res.status(403).json({ message: "You are not a member of this group" });
     }
 
     const task = await Task.create({
-      ...req.body,
+      ...taskData,
       groupId,
-      UserId: req.user.id, // Creator
+      UserId: user.id,
     });
 
     res.status(201).json(task);
@@ -24,17 +31,14 @@ exports.createTask = async (req, res) => {
   }
 };
 
-// Get all tasks (group scope)
+// ✅ Get all tasks for groups the user belongs to
 exports.getAllTasks = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id);
+    const user = await User.findByPk(req.user.id, { include: Group });
 
-    if (!user.GroupId) {
-      return res.status(200).json([]); // No group = no tasks
-    }
-
+    const groupIds = user.Groups.map(group => group.id);
     const tasks = await Task.findAll({
-      where: { groupId: user.GroupId },
+      where: { groupId: groupIds },
       order: [["createdAt", "DESC"]],
     });
 
@@ -45,14 +49,14 @@ exports.getAllTasks = async (req, res) => {
   }
 };
 
-// Get task by ID
+// ✅ Get task by ID (and check group membership)
 exports.getTaskById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id);
     const task = await Task.findByPk(req.params.id);
-
     if (!task) return res.status(404).json({ message: "Task not found" });
-    if (task.groupId !== user.GroupId) {
+
+    const user = await User.findByPk(req.user.id);
+    if (!(await isUserInGroup(user, task.groupId))) {
       return res.status(403).json({ message: "Not allowed to view this task" });
     }
 
@@ -63,14 +67,14 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
-// Update task
+// ✅ Update task
 exports.updateTask = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id);
     const task = await Task.findByPk(req.params.id);
-
     if (!task) return res.status(404).json({ message: "Task not found" });
-    if (task.groupId !== user.GroupId) {
+
+    const user = await User.findByPk(req.user.id);
+    if (!(await isUserInGroup(user, task.groupId))) {
       return res.status(403).json({ message: "Not allowed to update this task" });
     }
 
@@ -82,29 +86,18 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-// Delete task
+// ✅ Delete task
 exports.deleteTask = async (req, res) => {
   try {
-    console.log("DELETE /tasks/:id called");
-    console.log("req.user:", req.user);
-    console.log("req.params.id:", req.params.id);
-
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: "Unauthorized: missing user info" });
-    }
-    const user = await User.findByPk(req.user.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
     const task = await Task.findByPk(req.params.id);
-    if (!task) {
-      console.log("Task not found");
-      return res.status(404).json({ message: "Task not found" });
-    }
-    if (!user.GroupId || task.groupId !== user.GroupId) {
-      console.log("User not allowed to delete this task");
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const user = await User.findByPk(req.user.id);
+    if (!(await isUserInGroup(user, task.groupId))) {
       return res.status(403).json({ message: "Not allowed to delete this task" });
     }
+
     await task.destroy();
-    console.log("Task deleted successfully");
     res.status(200).json({ message: "Task deleted" });
   } catch (err) {
     console.error("Error deleting task:", err);
@@ -112,25 +105,21 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
-// Get tasks for a specific group
+// ✅ Get tasks for a specific group
 exports.getTasksByGroup = async (req, res) => {
   try {
     const groupId = req.params.groupId;
 
-    if (!groupId) {
-      return res.status(400).json({ message: "Group ID missing" });
-    }
-    // Get the current user
     const user = await User.findByPk(req.user.id);
-    // Check if user belongs to the requested group
-    if (user.GroupId !== parseInt(groupId)) {
-      return res.status(403).json({ message: "Access denied: not in this group" });
+    if (!(await isUserInGroup(user, groupId))) {
+      return res.status(403).json({ message: "Access denied: not a group member" });
     }
-    // Fetch the tasks
+
     const tasks = await Task.findAll({
       where: { groupId },
       order: [["dueDate", "ASC"]],
     });
+
     res.status(200).json(tasks);
   } catch (err) {
     console.error("Error fetching group tasks:", err);

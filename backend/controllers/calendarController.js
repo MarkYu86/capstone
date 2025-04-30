@@ -1,23 +1,30 @@
-// controllers/calendarController.js
-
-const { Task } = require('../models');
+const Task = require("../models/task");
+const User = require("../models/user");
+const Group = require("../models/group");
 
 const getTasksForGroup = async (req, res) => {
   try {
-    // ✅ Step 1: Parse and log groupId
     const groupId = parseInt(req.params.groupId, 10);
-    console.log("Parsed group ID:", groupId);
-
-    // ✅ Step 2: Fetch and log filtered tasks
-    const tasks = await Task.findAll({
-      where: { groupId: groupId },
+    const user = await User.findByPk(req.user.id, {
+      include: Group,
     });
-    console.log("Filtered tasks:", tasks);
+
+    // Check if user belongs to the group
+    const isMember = user.Groups?.some((g) => g.id === groupId);
+    if (!isMember) {
+      return res.status(403).json({ message: "Access denied: not a group member" });
+    }
+
+    // Fetch the tasks
+    const tasks = await Task.findAll({
+      where: { groupId },
+      order: [["dueDate", "ASC"]],
+    });
 
     res.json(tasks);
   } catch (error) {
     console.error("Error fetching tasks for group:", error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
 

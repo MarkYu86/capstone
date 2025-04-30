@@ -7,6 +7,7 @@ import TaskCard from "../components/TaskCard";
 function DashboardPage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [groups, setGroups] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -15,9 +16,7 @@ function DashboardPage() {
     const token = localStorage.getItem("token");
     axios
       .get("http://localhost:3001/api/tasks", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         setTasks(res.data);
@@ -26,6 +25,20 @@ function DashboardPage() {
       .catch((err) => {
         console.error("Failed to fetch tasks:", err);
         setLoading(false);
+      });
+  };
+
+  const fetchGroups = () => {
+    const token = localStorage.getItem("token");
+    axios
+      .get("http://localhost:3001/api/groups", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setGroups(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch groups:", err);
       });
   };
 
@@ -45,11 +58,9 @@ function DashboardPage() {
         },
       })
       .then((res) => {
-        console.log("User from dashboard API:", res.data);
         setUser({
           name: res.data.name,
           email: res.data.email,
-          groupId: res.data.groupId,
         });
       })
       .catch((err) => {
@@ -58,20 +69,22 @@ function DashboardPage() {
         navigate("/");
       });
 
+    fetchGroups();
     fetchTasks();
   }, [navigate]);
 
   return (
     <div className="container mt-4">
       <h1>Dashboard</h1>
+
       {user && (
         <>
           <p>
             Welcome back, <strong>{user.name || user.email}</strong> 👋
           </p>
-          {!user.groupId && (
+          {groups.length === 0 && (
             <p>
-              Need team work?{" "}
+              You are not in any group yet.{" "}
               <a
                 href="#"
                 onClick={(e) => {
@@ -79,9 +92,8 @@ function DashboardPage() {
                   navigate("/groups");
                 }}
               >
-                Click here
-              </a>{" "}
-              to create a group!
+                Create or join one now!
+              </a>
             </p>
           )}
         </>
@@ -100,14 +112,13 @@ function DashboardPage() {
             fetchTasks();
             setShowForm(false);
           }}
-          onCancel={() => setShowForm(false)}
         />
       )}
 
       {loading ? (
         <p>Loading tasks...</p>
       ) : tasks.length === 0 ? (
-        <p>No tasks found.</p>
+        <p>No tasks found for your groups.</p>
       ) : (
         <div className="row">
           {tasks.map((task) => (
@@ -115,7 +126,7 @@ function DashboardPage() {
               <TaskCard
                 task={task}
                 onDelete={fetchTasks}
-                onEdit={fetchTasks} // Refresh tasks after editing
+                onEdit={fetchTasks}
               />
             </div>
           ))}

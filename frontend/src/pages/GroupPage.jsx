@@ -93,23 +93,21 @@ function GroupPage() {
     }
   };
 
-  const handleRemoveMember = async (userId) => {
-    const confirm = window.confirm(
-      "Are you sure you want to remove this user?"
-    );
+  const handleRemoveMember = async (groupId, userId) => {
+    const confirm = window.confirm("Are you sure you want to remove this user?");
     if (!confirm) return;
-
+  
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:3001/api/groups/remove/${userId}`,
+        `http://localhost:3001/api/groups/remove/${groupId}/${userId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert("User removed.");
-      fetchGroupUsers();
+      toggleMembers(groupId); // re-fetch the members
     } catch (err) {
       console.error(err);
       alert("Failed to remove user.");
@@ -173,7 +171,7 @@ function GroupPage() {
                         {member.name ? member.name : member.email}
                         <button
                           className="btn btn-outline-danger btn-sm"
-                          onClick={() => handleRemoveMember(member.id)}
+                          onClick={() => handleRemoveMember(g.id, member.id)}
                         >
                           Remove
                         </button>

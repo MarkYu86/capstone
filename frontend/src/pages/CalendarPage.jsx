@@ -45,10 +45,10 @@ function CalendarPage() {
   const fetchTasks = async (groupId) => {
     const token = localStorage.getItem("token");
     console.log("Fetching tasks for groupId:", groupId);
-
+  
     try {
       const res = await axios.get(
-        `http://localhost:3001/api/calendar/${groupId}`,
+        `http://localhost:3001/api/tasks/group/${groupId}`, // updated route
         {
           headers: { Authorization: `Bearer ${token}` },
         }

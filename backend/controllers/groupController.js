@@ -6,15 +6,13 @@ exports.createGroup = async (req, res) => {
   const { name } = req.body;
 
   try {
-    const userId = req.user?.id; 
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const group = await Group.create({ name });
 
-    //Associate the user with the new group
     const user = await User.findByPk(userId);
-    user.GroupId = group.id;
-    await user.save();
+    await group.addUser(user); // Add creator to the group
 
     res.status(201).json(group);
   } catch (err) {
@@ -25,12 +23,11 @@ exports.createGroup = async (req, res) => {
 // Get group of the current user
 exports.getGroups = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id);
+    const user = await User.findByPk(req.user.id, {
+      include: Group,
+    });
 
-    if (!user.GroupId) return res.status(200).json([]); // no group
-
-    const group = await Group.findByPk(user.GroupId);
-    res.status(200).json([group]);
+    res.status(200).json(user.Groups); // user.Groups is populated from association
   } catch (err) {
     console.error("Fetch groups error:", err);
     res.status(500).json({ message: "Server error fetching groups" });
@@ -74,18 +71,17 @@ exports.inviteUserToGroup = async (req, res) => {
   try {
     const group = await Group.findByPk(groupId);
     if (!group) return res.status(404).json({ message: "Group not found" });
-    console.log("Group:", group);
 
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: "User not found" });
-    console.log("User:", user);
 
-    if (user.GroupId === group.id) {
+    // Check if user is already in the group
+    const isAlreadyMember = await group.hasUser(user);
+    if (isAlreadyMember) {
       return res.status(400).json({ message: "User already in this group" });
     }
 
-    user.GroupId = group.id;
-    await user.save();
+    await group.addUser(user); // Add user to group
 
     res
       .status(200)
@@ -100,12 +96,17 @@ exports.getGroupMembers = async (req, res) => {
   try {
     const groupId = req.params.id;
 
-    const users = await User.findAll({
-      where: { GroupId: groupId },
-      attributes: ["id", "name", "email"],
+    const group = await Group.findByPk(groupId, {
+      include: {
+        model: User,
+        attributes: ["id", "name", "email"],
+        through: { attributes: [] }, // don't return join table data
+      },
     });
 
-    res.json(users);
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    res.json(group.Users);
   } catch (err) {
     console.error("Get group members error:", err);
     res.status(500).json({ message: "Server error fetching members" });
@@ -115,21 +116,16 @@ exports.getGroupMembers = async (req, res) => {
 // Remove a user from a group
 exports.removeMember = async (req, res) => {
   try {
-    const { userIdToRemove } = req.params;
+    const { groupId, userIdToRemove } = req.params;
 
+    const group = await Group.findByPk(groupId);
     const user = await User.findByPk(userIdToRemove);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
+    if (!group || !user) {
+      return res.status(404).json({ message: "Group or user not found." });
     }
 
-    // Only allow removing if they are actually in a group
-    if (!user.GroupId) {
-      return res.status(400).json({ message: "User is not in any group." });
-    }
-
-    // Set the GroupId to null → removing from group
-    await user.update({ GroupId: null });
+    await group.removeUser(user);
 
     res.status(200).json({ message: "User removed from group." });
   } catch (error) {
