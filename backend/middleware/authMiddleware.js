@@ -1,5 +1,5 @@
+// ✅ authMiddleware.js
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
 
 const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -12,13 +12,7 @@ const verifyToken = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findByPk(decoded.id); // Fetch from DB
-
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized: User not found" });
-    }
-
-    req.user = user; 
+    req.user = { id: decoded.id }; // ✅ store only the ID
     next();
   } catch (err) {
     return res.status(403).json({ message: "Forbidden: Invalid token" });
