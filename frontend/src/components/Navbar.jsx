@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import "../styles/Navbar.css"
 
 function Navbar() {
   const navigate = useNavigate();
@@ -46,18 +47,18 @@ function Navbar() {
             </button>
           </div>
         ) : (
-          <ul className="navbar-nav ms-auto d-flex flex-row">
-            <li className="nav-item me-3">
-              <Link className="nav-link" to="/">
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">
-                Register
-              </Link>
-            </li>
-          </ul>
+          <ul className="navbar-nav ms-auto d-flex flex-row auth-buttons">
+          <li className="nav-item me-2">
+            <Link className="btn btn-outline-primary btn-sm" to="/">
+              Login
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="btn btn-outline-secondary btn-sm" to="/register">
+              Register
+            </Link>
+          </li>
+        </ul>
         )}
       </div>
     </nav>
