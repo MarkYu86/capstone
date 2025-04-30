@@ -1,17 +1,26 @@
-const Task = require("../models/task");
+// controllers/calendarController.js
 
-exports.getTasksForGroup = async (req, res) => {
+const { Task } = require('../models');
+
+const getTasksForGroup = async (req, res) => {
   try {
-    const groupId = req.params.groupId;
+    // ✅ Step 1: Parse and log groupId
+    const groupId = parseInt(req.params.groupId, 10);
+    console.log("Parsed group ID:", groupId);
 
+    // ✅ Step 2: Fetch and log filtered tasks
     const tasks = await Task.findAll({
-      where: { groupId },
-      order: [["dueDate", "ASC"]],
+      where: { groupId: groupId },
     });
+    console.log("Filtered tasks:", tasks);
 
-    res.status(200).json(tasks);
-  } catch (err) {
-    console.error("Error fetching group tasks:", err);
-    res.status(500).json({ message: "Server error fetching group tasks" });
+    res.json(tasks);
+  } catch (error) {
+    console.error("Error fetching tasks for group:", error);
+    res.status(500).json({ message: 'Server error' });
   }
+};
+
+module.exports = {
+  getTasksForGroup,
 };

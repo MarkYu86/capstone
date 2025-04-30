@@ -32,8 +32,10 @@ function CalendarPage() {
       });
       setGroups(res.data);
 
-      if (!selectedGroup && res.data.length > 0) {
-        setSelectedGroup(res.data[0].id.toString());
+      if (res.data.length > 0) {
+        const defaultGroupId = res.data[0].id.toString();
+        setSelectedGroup(defaultGroupId);
+        localStorage.setItem("selectedGroupId", defaultGroupId); 
       }
     } catch (err) {
       console.error("Error fetching groups:", err);
@@ -42,6 +44,7 @@ function CalendarPage() {
 
   const fetchTasks = async (groupId) => {
     const token = localStorage.getItem("token");
+    console.log("Fetching tasks for groupId:", groupId);
 
     try {
       const res = await axios.get(
@@ -50,6 +53,7 @@ function CalendarPage() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      console.log("Fetched tasks:", res.data);
       setTasks(res.data);
       organizeTasks(res.data);
     } catch (err) {
@@ -63,6 +67,7 @@ function CalendarPage() {
     taskList.forEach((task) => {
       const dueDate = new Date(task.dueDate);
       const key = dueDate.toISOString().split("T")[0]; // 'YYYY-MM-DD'
+      console.log("Organizing task for date key:", key, task.name); 
       if (!map[key]) map[key] = [];
       map[key].push(task);
     });
