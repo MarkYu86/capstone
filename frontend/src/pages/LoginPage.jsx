@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../styles/LoginPage.css"
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ function LoginPage() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login successful!");
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (err) {
       alert("Login failed. Please check your details.");
       console.error(err);
@@ -28,46 +29,51 @@ function LoginPage() {
 
   return (
     <>
-    <div className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h2 className="mb-4 text-center">Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="mb-3">
-          <label className="form-label">Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+      <div className="login-container container mt-5">
+        <div className="login-card p-4 shadow">
+          <h2 className="mb-4 text-center">Login</h2>
+          <form onSubmit={handleLogin}>
+            <div className="mb-3">
+              <label className="form-label">Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-outline-success w-100 mb-2"
+            >
+              Login
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-outline-warning w-100"
+              onClick={() => navigate("/register")}
+            >
+              Register
+            </button>
+          </form>
         </div>
-
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-100 mb-2">
-          Login
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-outline-secondary w-100"
-          onClick={() => navigate("/register")}
-        >
-          Register
-        </button>
-      </form>
-    </div>
+      </div>
     </>
   );
 }
