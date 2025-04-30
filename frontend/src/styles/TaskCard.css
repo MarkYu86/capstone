@@ -23,8 +23,8 @@
   .card-text {
     font-size: 0.95rem;
     color: #555;
-    word-break: break-word;  /* Stronger than overflow-wrap */
-    overflow-wrap: anywhere; /* Breaks anywhere when necessary */
+    word-break: break-word;  
+    overflow-wrap: anywhere; 
     white-space: normal;
   }
   
