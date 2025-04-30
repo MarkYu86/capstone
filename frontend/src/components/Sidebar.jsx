@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/Sidebar.css"
 
 function Sidebar() {
   const location = useLocation();
@@ -9,12 +10,13 @@ function Sidebar() {
 
   return (
     <div
-      className="d-flex flex-column flex-shrink-0 p-3 bg-light"
-      style={{ 
-        width: "220px", 
-        height: "100vh", 
-        position: "sticky", 
-        top: 0 }}
+      className="custom-sidebar d-flex flex-column flex-shrink-0 p-3"
+      style={{
+        width: "220px",
+        height: "100vh",
+        position: "sticky",
+        top: 0,
+      }}
     >
       <h4 className="text-center">Menu</h4>
       <hr />

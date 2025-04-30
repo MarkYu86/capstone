@@ -1,0 +1,27 @@
+.custom-sidebar {
+    background: linear-gradient(135deg, #b3ddff, #dfe5ec);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+    border: none;
+  }
+  
+  .custom-sidebar h4 {
+    color: #2c3e50;
+  }
+  
+  .custom-sidebar .nav-link {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  .custom-sidebar .nav-link.text-dark:hover {
+    background-color: #d6effb;
+    color: #000;
+  }
+  
+  .custom-sidebar .nav-link.active {
+    background-color: #85C7DE !important;
+    color: white !important;
+  }
+  
