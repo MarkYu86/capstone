@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import EditTaskForm from "./EditTaskForm";
 import "../styles/TaskCard.css"
 
 function TaskCard({ task, onDelete, onEdit }) {
   const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
   const [editMode, setEditMode] = useState(false);
-  const navigate = useNavigate();
+ 
 
   useEffect(() => {
     setDaysLeft(calculateDaysLeft());
