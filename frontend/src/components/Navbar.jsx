@@ -40,21 +40,21 @@ function Navbar() {
               Welcome, <strong>{userName}</strong> 👋
             </span>
             <button
-              className="btn btn-outline-danger btn-sm"
+              className="btn btn-outline-danger btn-sm logout"
               onClick={handleLogout}
             >
               Logout
             </button>
           </div>
         ) : (
-          <ul className="navbar-nav ms-auto d-flex flex-row auth-buttons">
+          <ul className="navbar-nav ms-auto d-flex flex-row">
           <li className="nav-item me-2">
-            <Link className="btn btn-outline-primary btn-sm" to="/">
+            <Link className="btn btn-outline-primary btn-sm login" to="/">
               Login
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="btn btn-outline-secondary btn-sm" to="/register">
+            <Link className="btn btn-outline-secondary btn-sm register" to="/register">
               Register
             </Link>
           </li>

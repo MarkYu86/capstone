@@ -2,40 +2,69 @@
     width: 100%;
     background: linear-gradient(135deg, #b3ddff, #dfe5ec);
     padding: 0.75rem 1.5rem;
-  }
-  
-  .navbar .navbar-brand {
+}
+
+.navbar .navbar-brand {
     font-weight: bold;
     font-size: 1.25rem;
     color: #222;
-  }
-  
-  .navbar .welcome-user {
+}
+
+.navbar .welcome-user {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
-  }
-  
-  .navbar .btn {
+}
+
+.navbar .btn {
     flex-shrink: 0;
     white-space: nowrap;
-  }
-  
-  .navbar-nav {
+}
+
+.navbar-nav {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
     align-items: center;
     justify-content: flex-end;
-  }
+}
 
-  @media (max-width: 575px) {
+@media (max-width: 575px) {
+
     .navbar .welcome-user,
     .navbar-nav {
-      flex-direction: column;
-      align-items: flex-end;
+        flex-direction: column;
+        align-items: flex-end;
     }
-  }
-  
+}
+
+.register {
+    border: none;
+    background-color: #A0C4E2;
+    color: #fff;
+    transition: 0.5s;
+}
+
+.register:hover {
+    background-color: #2bb3fc;
+}
+
+.login {
+    border: none;
+    background-color: #6FB7D0;
+    color: #fff;
+    transition: 0.5s;
+}
+
+.login:hover {
+    background-color: #71d1db;
+}
+
+.logout {
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #85C7DE;
+    color: #fff;
+}
