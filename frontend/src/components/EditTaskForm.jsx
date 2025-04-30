@@ -66,7 +66,7 @@ function EditTaskForm({ task, onTaskUpdated }) {
   };
 
   return (
-    <div className="card mb-4">
+   <>
       <div className="card-header">Edit Task</div>
       <div className="card-body">
         <form onSubmit={handleSubmit}>
@@ -144,7 +144,7 @@ function EditTaskForm({ task, onTaskUpdated }) {
           </button>
         </form>
       </div>
-    </div>
+      </>
   );
 }
 

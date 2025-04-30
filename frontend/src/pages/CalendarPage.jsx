@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../index.css";
+import "../styles/Calendar.css"
 
 function CalendarPage() {
   const [tasks, setTasks] = useState([]);
