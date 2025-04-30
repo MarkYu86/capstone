@@ -43,29 +43,25 @@ function CreateTaskForm({ onTaskCreated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (!selectedGroup) {
-      alert("Please select a group before creating a task.");
-      return;
-    }
-  
     const token = localStorage.getItem("token");
   
     const payload = {
       name: formData.name,
       frequency: `Every ${formData.repeatInterval} ${formData.repeatUnit}`,
-      dueDate: new Date(), // Can be customized
+      dueDate: new Date(),
       notes: formData.notes.trim() || null,
       status: "incomplete",
-      groupId: selectedGroup, // required
-      assignedTo: formData.assignedTo || null,
+      groupId: selectedGroup || null, // ✅ allow null group
+      assignedTo: formData.assignedTo || "",
     };
   
     try {
+      console.log("Submitting task:", payload);
       await axios.post("http://localhost:3001/api/tasks", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
   
-      onTaskCreated(); // Refresh task list or UI
+      onTaskCreated();
     } catch (err) {
       console.error(err);
       alert("Failed to create task.");
