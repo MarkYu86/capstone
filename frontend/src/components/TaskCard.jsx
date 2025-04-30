@@ -108,6 +108,11 @@ function TaskCard({ task, onDelete, onEdit }) {
         ) : (
           <>
             <h5 className="card-title">{task.name}</h5>
+            {task.groupId === null && (
+              <p className="text-muted mb-1" style={{ fontSize: "0.85rem" }}>
+                <em>Private Task - would not display in the calendar</em>
+              </p>
+            )}
             <h6 className="text-muted">{task.assignedTo}</h6>
             <p className="card-text text-muted">{dueText}</p>
             {task.notes && (
