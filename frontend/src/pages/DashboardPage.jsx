@@ -113,7 +113,7 @@ function DashboardPage() {
       {loading ? (
         <p>Loading tasks...</p>
       ) : tasks.length === 0 ? (
-        <p>No tasks found for your groups.</p>
+        <p>No task yet, click button to create on!</p>
       ) : (
         <div className="row">
           {tasks.map((task) => {
