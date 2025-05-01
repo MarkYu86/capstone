@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import InviteModal from "../components/InviteModal";
+import "../index.css"
 
 function GroupPage() {
   const [groups, setGroups] = useState([]);
@@ -125,7 +126,7 @@ function GroupPage() {
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
           />
-          <button className="btn btn-success" onClick={handleCreate}>
+          <button className="btn btn-outline-success" onClick={handleCreate}>
             Create Group
           </button>
         </div>
