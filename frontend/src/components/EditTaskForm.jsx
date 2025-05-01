@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import GroupSelector from "./GroupSelector";
+import "../index.css"
 
 function EditTaskForm({ task, onTaskUpdated }) {
   const [formData, setFormData] = useState({
@@ -139,8 +140,8 @@ function EditTaskForm({ task, onTaskUpdated }) {
             </>
           )}
 
-          <button className="btn btn-success me-2 mt-3" type="submit">
-            Save Changes
+          <button className="btn-outline-success me-2 mt-3" type="submit">
+            Save Changes 
           </button>
         </form>
       </div>

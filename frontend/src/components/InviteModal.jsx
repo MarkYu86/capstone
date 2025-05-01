@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "../index.css"
 
 function InviteModal({ group, show, onClose, onSuccess }) {
   const [email, setEmail] = useState("");
@@ -48,7 +49,7 @@ function InviteModal({ group, show, onClose, onSuccess }) {
             />
           </div>
           <div className="modal-footer">
-            <button className="btn btn-primary" onClick={handleInvite}>
+            <button className="btn btn-outline-success" onClick={handleInvite}>
               Add
             </button>
           </div>
