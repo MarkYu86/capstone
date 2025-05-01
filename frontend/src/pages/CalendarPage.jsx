@@ -142,15 +142,12 @@ function CalendarPage() {
     setCurrentDate(newDate);
   };
 
-  const monthLabel = currentDate.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
+
 
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Calendar - {monthLabel}</h2>
+        <h2>Calendar</h2>
         <select
           className="form-select w-auto"
           value={selectedGroup}
