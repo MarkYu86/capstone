@@ -20,7 +20,7 @@ const Task = sequelize.define("Task", {
     allowNull: false,
   },
   assignedTo: {
-    type: DataTypes.STRING, // Will link to userId later if needed
+    type: DataTypes.STRING, 
     allowNull: false,
   },
   notes: {
@@ -32,7 +32,7 @@ const Task = sequelize.define("Task", {
     allowNull: true,
   },
   groupId: {
-    type: DataTypes.INTEGER, // Will link to a Group model later
+    type: DataTypes.INTEGER, 
     allowNull: true,
   },
 }, {

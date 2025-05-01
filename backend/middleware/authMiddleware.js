@@ -12,7 +12,7 @@ const verifyToken = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.id }; // ✅ store only the ID
+    req.user = { id: decoded.id }; // store the ID
     next();
   } catch (err) {
     return res.status(403).json({ message: "Forbidden: Invalid token" });

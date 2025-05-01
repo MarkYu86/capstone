@@ -3,21 +3,21 @@ const router = express.Router();
 const taskController = require("../controllers/taskController");
 const verifyToken = require("../middleware/authMiddleware");
 
-//CREATE
+//create
 router.post("/", verifyToken, taskController.createTask);
 
-//READ all
+//get all task
 router.get("/", verifyToken, taskController.getAllTasks);
 
-//READ one
+//get one task
 router.get("/:id", verifyToken, taskController.getTaskById);
 
-//UPDATE
+//update
 router.put("/:id", verifyToken, taskController.updateTask);
 
-//DELETE
+//delete
 router.delete("/:id", verifyToken, taskController.deleteTask);
 
-// NEW: get tasks by groupId
+// get tasks by groupId
 router.get("/group/:groupId", verifyToken, taskController.getTasksByGroup);
 module.exports = router;

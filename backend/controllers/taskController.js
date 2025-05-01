@@ -35,7 +35,7 @@ exports.createTask = async (req, res) => {
   }
 };
 
-// ✅ Get all tasks for groups the user belongs to
+// Get all tasks for groups the user belongs to
 exports.getAllTasks = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, { include: Group });
@@ -44,7 +44,6 @@ exports.getAllTasks = async (req, res) => {
     let whereClause = {};
 
     if (groupIds.length > 0) {
-      // If the user belongs to groups, return tasks that are either group tasks or personal tasks.
       whereClause = {
         [Op.or]: [
           { groupId: groupIds },
@@ -69,7 +68,7 @@ exports.getAllTasks = async (req, res) => {
 };
 
 
-// ✅ Get task by ID (and check group membership)
+// Get task by ID (and check group membership)
 exports.getTaskById = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);
@@ -94,7 +93,7 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
-// ✅ Update task
+// Update task
 exports.updateTask = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);
@@ -119,7 +118,7 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-// ✅ Delete task
+// Delete task
 exports.deleteTask = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);
@@ -144,7 +143,7 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
-// ✅ Get tasks for a specific group
+// Get tasks for a specific group
 exports.getTasksByGroup = async (req, res) => {
   try {
     const groupId = req.params.groupId;

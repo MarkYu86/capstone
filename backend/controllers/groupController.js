@@ -27,14 +27,14 @@ exports.getGroups = async (req, res) => {
       include: Group,
     });
 
-    res.status(200).json(user.Groups); // user.Groups is populated from association
+    res.status(200).json(user.Groups); 
   } catch (err) {
     console.error("Fetch groups error:", err);
     res.status(500).json({ message: "Server error fetching groups" });
   }
 };
 
-// Get users in a specific group
+// Get users in a group
 exports.getUsersInGroup = async (req, res) => {
   try {
     const group = await Group.findByPk(req.params.id, {
@@ -64,6 +64,7 @@ exports.deleteGroup = async (req, res) => {
   }
 };
 
+//invite user to group
 exports.inviteUserToGroup = async (req, res) => {
   const groupId = req.params.id;
   const { email } = req.body;
@@ -75,7 +76,7 @@ exports.inviteUserToGroup = async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Check if user is already in the group
+    // check if user is already in the group
     const isAlreadyMember = await group.hasUser(user);
     if (isAlreadyMember) {
       return res.status(400).json({ message: "User already in this group" });
@@ -91,7 +92,7 @@ exports.inviteUserToGroup = async (req, res) => {
     res.status(500).json({ message: "Server error inviting user" });
   }
 };
-//Brose group members under each group list
+//see group members under each group list
 exports.getGroupMembers = async (req, res) => {
   try {
     const groupId = req.params.id;
@@ -113,7 +114,7 @@ exports.getGroupMembers = async (req, res) => {
   }
 };
 
-// Remove a user from a group
+// remove user from group
 exports.removeMember = async (req, res) => {
   try {
     const { groupId, userIdToRemove } = req.params;
