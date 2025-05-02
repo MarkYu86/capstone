@@ -67,7 +67,7 @@ function CalendarPage() {
 
     taskList.forEach((task) => {
       const dueDate = new Date(task.dueDate);
-      const key = dueDate.toISOString().split("T")[0]; // 'YYYY-MM-DD'
+      const key = dueDate.toISOString().split("T")[0]; 
       console.log("Organizing task for date key:", key, task.name); 
       if (!map[key]) map[key] = [];
       map[key].push(task);

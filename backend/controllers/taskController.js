@@ -3,13 +3,13 @@ const User = require("../models/user");
 const Group = require("../models/group");
 const { Op } = require("sequelize");
 
-// 🔁 Utility: check if user is in a group
+//check if user is in a group
 const isUserInGroup = async (user, groupId) => {
   const groups = await user.getGroups();
-  return groups.some(group => group.id === parseInt(groupId, 10));
+  return groups.some((group) => group.id === parseInt(groupId, 10));
 };
 
-// ✅ Create a task (requires groupId in body)
+// Create a task requires groupId in body
 exports.createTask = async (req, res) => {
   const { groupId, ...taskData } = req.body;
   console.log("Create task payload:", req.body);
@@ -18,7 +18,9 @@ exports.createTask = async (req, res) => {
     if (groupId) {
       const isMember = await isUserInGroup(user, groupId);
       if (!isMember) {
-        return res.status(403).json({ message: "You are not a member of this group" });
+        return res
+          .status(403)
+          .json({ message: "You are not a member of this group" });
       }
     }
 
@@ -39,16 +41,13 @@ exports.createTask = async (req, res) => {
 exports.getAllTasks = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, { include: Group });
-    const groupIds = user.Groups.map(group => group.id);
-    
+    const groupIds = user.Groups.map((group) => group.id);
+
     let whereClause = {};
 
     if (groupIds.length > 0) {
       whereClause = {
-        [Op.or]: [
-          { groupId: groupIds },
-          { groupId: null, UserId: user.id }
-        ]
+        [Op.or]: [{ groupId: groupIds }, { groupId: null, UserId: user.id }],
       };
     } else {
       // User has no groups; just return personal tasks.
@@ -67,7 +66,6 @@ exports.getAllTasks = async (req, res) => {
   }
 };
 
-
 // Get task by ID (and check group membership)
 exports.getTaskById = async (req, res) => {
   try {
@@ -78,11 +76,15 @@ exports.getTaskById = async (req, res) => {
 
     if (task.groupId) {
       if (!(await isUserInGroup(user, task.groupId))) {
-        return res.status(403).json({ message: "Not allowed to view this task" });
+        return res
+          .status(403)
+          .json({ message: "Not allowed to view this task" });
       }
     } else {
       if (task.UserId !== user.id) {
-        return res.status(403).json({ message: "Not allowed to access this personal task" });
+        return res
+          .status(403)
+          .json({ message: "Not allowed to access this personal task" });
       }
     }
 
@@ -102,11 +104,15 @@ exports.updateTask = async (req, res) => {
     const user = await User.findByPk(req.user.id);
     if (task.groupId) {
       if (!(await isUserInGroup(user, task.groupId))) {
-        return res.status(403).json({ message: "Not allowed to access this group task" });
+        return res
+          .status(403)
+          .json({ message: "Not allowed to access this group task" });
       }
     } else {
       if (task.UserId !== user.id) {
-        return res.status(403).json({ message: "Not allowed to access this personal task" });
+        return res
+          .status(403)
+          .json({ message: "Not allowed to access this personal task" });
       }
     }
 
@@ -127,11 +133,15 @@ exports.deleteTask = async (req, res) => {
     const user = await User.findByPk(req.user.id);
     if (task.groupId) {
       if (!(await isUserInGroup(user, task.groupId))) {
-        return res.status(403).json({ message: "Not allowed to access this group task" });
+        return res
+          .status(403)
+          .json({ message: "Not allowed to access this group task" });
       }
     } else {
       if (task.UserId !== user.id) {
-        return res.status(403).json({ message: "Not allowed to access this personal task" });
+        return res
+          .status(403)
+          .json({ message: "Not allowed to access this personal task" });
       }
     }
 
@@ -150,7 +160,9 @@ exports.getTasksByGroup = async (req, res) => {
 
     const user = await User.findByPk(req.user.id);
     if (!(await isUserInGroup(user, groupId))) {
-      return res.status(403).json({ message: "Access denied: not a group member" });
+      return res
+        .status(403)
+        .json({ message: "Access denied: not a group member" });
     }
 
     const tasks = await Task.findAll({
